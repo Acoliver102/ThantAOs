@@ -1,7 +1,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.SPI;
@@ -17,7 +19,7 @@ public class Chassis extends SubsystemBase {
     public static WPI_TalonFX rMotor = null;
     public static WPI_TalonFX lMotor = null;
 
-    private static Gyro gyro = new ADXRS450_Gyro(SPI.Port.kMXP);
+
 
     DifferentialDrive diffDrive = null;
 
@@ -25,12 +27,12 @@ public class Chassis extends SubsystemBase {
     public Chassis() {
 
         // Names the motors
-        rMotor = new WPI_TalonFX(0);
+        rMotor = new WPI_TalonFX(2);
+        rMotor.setNeutralMode(NeutralMode.Brake);
         lMotor = new WPI_TalonFX(1);
+        lMotor.setNeutralMode(NeutralMode.Brake);
 
         diffDrive = new DifferentialDrive(lMotor, rMotor);
-
-        gyro.reset();
 
 
     }
@@ -40,9 +42,6 @@ public class Chassis extends SubsystemBase {
         diffDrive.curvatureDrive(fwdSpeed, rotAmt, true);
     }
 
-    public double getGyroHeading() {
-        return gyro.getAngle();
-    }
 
 
 }
