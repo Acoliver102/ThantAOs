@@ -45,13 +45,20 @@ public class chassisDrive extends CommandBase {
 
         // Sets the controller inputs to variables so they can be used easier
 
-        double moveSpeed = -RobotContainer.driverController.getRawAxis(1);
-        double rotateSpeed =  0.80*RobotContainer.driverController.getRawAxis(4);
 
-        // Calls the "driveChassis" command with the controller inputs as the commands
-        cChassis.driveChassis(moveSpeed, rotateSpeed);
 
-        System.out.println(RobotContainer.driverController.getRawAxis(1));
+            double moveSpeed = -RobotContainer.driverController.getRawAxis(1);
+            double rotateSpeed = 0.80 * RobotContainer.driverController.getRawAxis(4);
+
+            // Calls the "driveChassis" command with the controller inputs as the commands
+            cChassis.driveChassis(moveSpeed, rotateSpeed);
+
+//            try {
+//                writer.append((System.currentTimeMillis() - startTime) + "," +
+//                        cChassis.lMotor.get() + "," + cChassis.rMotor.get() + "\n");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
     }
 

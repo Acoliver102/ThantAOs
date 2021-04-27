@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.AutonGroup;
+import frc.robot.commands.ChassisDriveFromRecording;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.chassisDrive;
 import frc.robot.subsystems.Chassis;
@@ -52,6 +53,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new ChassisDriveFromRecording(mChassis);
   }
 }

@@ -19,6 +19,8 @@ public class Chassis extends SubsystemBase {
     public static WPI_TalonFX rMotor = null;
     public static WPI_TalonFX lMotor = null;
 
+    public boolean runningAuton = false;
+
 
 
     DifferentialDrive diffDrive = null;
@@ -27,7 +29,7 @@ public class Chassis extends SubsystemBase {
     public Chassis() {
 
         // Names the motors
-        rMotor = new WPI_TalonFX(2);
+        rMotor = new WPI_TalonFX(0);
         rMotor.setNeutralMode(NeutralMode.Brake);
         lMotor = new WPI_TalonFX(1);
         lMotor.setNeutralMode(NeutralMode.Brake);

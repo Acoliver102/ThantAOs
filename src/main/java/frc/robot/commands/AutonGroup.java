@@ -9,7 +9,7 @@ public class AutonGroup extends SequentialCommandGroup {
 
     public AutonGroup(Chassis chassis) {
         cChassis = chassis;
-        addCommands(new ChassisDriveAuton(1.0, 0.0, 1.0, cChassis));
+        addCommands(new ChassisDriveFromRecording(cChassis));
     }
 
 }
