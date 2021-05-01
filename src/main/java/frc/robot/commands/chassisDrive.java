@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static frc.robot.Constants.append;
 import static frc.robot.Constants.autoFile;
 
 public class chassisDrive extends CommandBase {
@@ -28,7 +29,7 @@ public class chassisDrive extends CommandBase {
         driveLimit = new SlewRateLimiter(10.0);
 
         try {
-            cWriter = new FileWriter(new File(autoFile));
+            cWriter = new FileWriter(new File(autoFile), append);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class chassisDrive extends CommandBase {
     @Override
     public void initialize() {
         try {
-            cWriter = new FileWriter(new File(autoFile));
+            cWriter = new FileWriter(new File(autoFile), append);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,6 +77,7 @@ public class chassisDrive extends CommandBase {
     @Override
     public void end(boolean isFinished) {
         try {
+            cWriter.flush();
             cWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

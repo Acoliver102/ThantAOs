@@ -13,6 +13,7 @@ import java.sql.Array;
 import java.util.List;
 import java.util.Scanner;
 
+import static frc.robot.Constants.append;
 import static frc.robot.Constants.autoFile;
 
 public class ChassisDriveFromRecording extends CommandBase {
@@ -40,9 +41,11 @@ public class ChassisDriveFromRecording extends CommandBase {
     public void initialize() {
         System.out.println("trying");
         try {
+            cReader.close();
             cReader = new BufferedReader(new FileReader(new File(autoFile)));
-
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

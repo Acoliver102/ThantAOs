@@ -16,6 +16,7 @@ import java.io.File;
  */
 public final class Constants {
 
-    public static String autoFile = "/home/lvuser/recordings/recording21.csv";
+    public static String autoFile = "/home/lvuser/recordings/recording8.csv";
+    public static boolean append = true;
 
 }
