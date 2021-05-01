@@ -1,9 +1,16 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 
-import java.io.FileNotFoundException;
+
+import java.io.*;
+import java.sql.Array;
+import java.util.List;
 import java.util.Scanner;
 
 import static frc.robot.Constants.autoFile;
@@ -11,86 +18,80 @@ import static frc.robot.Constants.autoFile;
 public class ChassisDriveFromRecording extends CommandBase {
 
     Chassis cChassis;
+    BufferedReader cReader;
+    int row;
+    String currentLine;
+    String[] split;
 
-    Scanner scanner;
-    double startTime;
-    double tDelta;
-    double nextDouble;
-    double timePassed;
-
-    double lastLInput;
-    double lastRInput;
-
-    boolean onTime;
 
     public ChassisDriveFromRecording(Chassis chassis) {
 
-        cChassis = chassis;
-
+        split = new String[]{"0.0", "0.0"};
         try {
-            scanner = new Scanner(autoFile);
-            scanner.useDelimiter("[,\\n]");
+            cReader = new BufferedReader(new FileReader(new File(autoFile)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        startTime = System.currentTimeMillis();
-        tDelta = 0.0;
-        nextDouble = 0.0;
-
-        onTime = true;
-
-        lastLInput = 0.0;
-        lastRInput = 0.0;
-
-        System.out.println("trying");
-
+        row = 0;
+        cChassis = chassis;
     }
 
     @Override
     public void initialize() {
-        cChassis.runningAuton = true;
+        System.out.println("trying");
+        try {
+            cReader = new BufferedReader(new FileReader(new File(autoFile)));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (cChassis != null) {
+            cChassis.runningAuton = true;
+        }
     }
 
     @Override
     public void execute() {
-        if ((scanner != null) && (scanner.hasNextDouble())) {
-            if (onTime) {
-                nextDouble = scanner.nextDouble();
+
+
+        try {
+            if ((currentLine = cReader.readLine()) != null) {
+                split = currentLine.split(",");
+                System.out.println(split[0]);
+                cChassis.lMotor.set(ControlMode.PercentOutput, Double.parseDouble(split[0]));
+                cChassis.rMotor.set(ControlMode.PercentOutput, Double.parseDouble(split[1]));
+
             }
-
-
-            timePassed = System.currentTimeMillis() - startTime;
-            tDelta = nextDouble - (System.currentTimeMillis() - startTime);
-
-            System.out.println(tDelta);
-
-            if (tDelta <= 0.0) {
-                cChassis.lMotor.set(scanner.nextDouble());
-                cChassis.rMotor.set(scanner.nextDouble());
-
-                System.out.println("updated");
-
-                onTime = true;
-            } else {
-                onTime = false;
-            }
-
+        } catch (IOException e) {
+            System.out.println("System IOException");
         }
-        System.out.println("executing");
-
+        cChassis.lMotor.set(ControlMode.PercentOutput, Double.parseDouble(split[0]));
 
     }
 
     @Override
     public boolean isFinished() {
-        return !scanner.hasNextDouble();
+        return false;
     }
 
     @Override
     public void end(boolean isFinished) {
         System.out.println("done");
-        cChassis.runningAuton = false;
-        cChassis.driveChassis(0.0, 0.0);
+        if (cChassis != null) {
+            cChassis.driveChassis(0.0, 0.0);
+            cChassis.runningAuton = false;
+        }
+        if (cReader != null) {
+            try {
+                cReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
     }
 
 }

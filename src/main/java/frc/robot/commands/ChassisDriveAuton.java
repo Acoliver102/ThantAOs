@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
@@ -33,7 +34,7 @@ public class ChassisDriveAuton extends CommandBase {
 
     @Override
     public void execute() {
-        cChassis.driveChassis(fwd, rot);
+        cChassis.driveTank(0.5, 0.0);
     }
 
     @Override

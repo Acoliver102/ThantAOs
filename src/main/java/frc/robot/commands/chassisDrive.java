@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Chassis;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -14,10 +15,10 @@ public class chassisDrive extends CommandBase {
 
     Chassis cChassis;
 
+    FileWriter cWriter;
+
     SlewRateLimiter driveLimit;
 
-    double startTime;
-    FileWriter writer;
 
     /** Creates a new chassisDrive. */
     public chassisDrive(Chassis chassis) {
@@ -26,9 +27,8 @@ public class chassisDrive extends CommandBase {
         addRequirements(cChassis);
         driveLimit = new SlewRateLimiter(10.0);
 
-        startTime = System.currentTimeMillis();
         try {
-            writer = new FileWriter(autoFile);
+            cWriter = new FileWriter(new File(autoFile));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,7 +37,13 @@ public class chassisDrive extends CommandBase {
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+        try {
+            cWriter = new FileWriter(new File(autoFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
@@ -47,19 +53,34 @@ public class chassisDrive extends CommandBase {
 
 
 
-            double moveSpeed = -RobotContainer.driverController.getRawAxis(1);
-            double rotateSpeed = 0.80 * RobotContainer.driverController.getRawAxis(4);
+        double moveSpeed = -RobotContainer.driverController.getRawAxis(1);
+        double rotateSpeed = 0.80 * RobotContainer.driverController.getRawAxis(4);
 
-            // Calls the "driveChassis" command with the controller inputs as the commands
+        // Calls the "driveChassis" command with the controller inputs as the commands
+
+        if (!cChassis.runningAuton) {
+
             cChassis.driveChassis(moveSpeed, rotateSpeed);
+            cChassis.lMotor.feed();
+            cChassis.rMotor.feed();
 
-//            try {
-//                writer.append((System.currentTimeMillis() - startTime) + "," +
-//                        cChassis.lMotor.get() + "," + cChassis.rMotor.get() + "\n");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                cWriter.append(cChassis.lMotor.get() + "," + cChassis.rMotor.get() + "\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+
+    @Override
+    public void end(boolean isFinished) {
+        try {
+            cWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Writer closed");
     }
 
 }

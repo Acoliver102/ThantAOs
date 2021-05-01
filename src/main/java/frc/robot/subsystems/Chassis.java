@@ -13,6 +13,14 @@ import frc.robot.Constants;
 
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.commands.chassisDrive;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+import static frc.robot.Constants.autoFile;
 
 public class Chassis extends SubsystemBase {
     // Initializes the motor variables
@@ -21,12 +29,16 @@ public class Chassis extends SubsystemBase {
 
     public boolean runningAuton = false;
 
+    Scanner chassisScanner;
+
+    FileWriter chassisWriter;
+
 
 
     DifferentialDrive diffDrive = null;
 
     /** Creates a new Chassis. */
-    public Chassis() {
+    public Chassis() throws IOException {
 
         // Names the motors
         rMotor = new WPI_TalonFX(0);
@@ -36,12 +48,34 @@ public class Chassis extends SubsystemBase {
 
         diffDrive = new DifferentialDrive(lMotor, rMotor);
 
+        chassisWriter = new FileWriter(new File(autoFile));
+        chassisScanner = new Scanner(new File(autoFile));
+
+        runningAuton = false;
+
+        setDefaultCommand(new chassisDrive(this));
 
     }
 
     public void driveChassis(double fwdSpeed, double rotAmt) {
         // Uses the "arcadeDrive" function to move the robot
         diffDrive.curvatureDrive(fwdSpeed, rotAmt, true);
+    }
+
+    public void recordValues() throws IOException {
+        chassisWriter.append(lMotor.get() + "," + rMotor.get() + "\n");
+    }
+
+    public void driveTank(double lSpeed, double rSpeed) {
+        diffDrive.tankDrive(lSpeed, rSpeed);
+    }
+
+    @Override
+    public void periodic() {
+        diffDrive.feed();
+        diffDrive.feedWatchdog();
+        lMotor.feed();
+        rMotor.feed();
     }
 
 
